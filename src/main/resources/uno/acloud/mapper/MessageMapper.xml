@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="uno.acloud.mapper.MessageMapper">
+    <!-- 新增消息 -->
+    <insert id="insert" parameterType="Message">
+        INSERT INTO message (content, create_time, state, user_id, username, displayId, nickname, position)
+        VALUES (#{content}, #{createTime}, #{state}, #{userId}, #{username}, #{displayId}, #{nickname}, #{position})
+    </insert>
+
+    <update id="approveMessage">
+        UPDATE message
+        SET state = 1
+        WHERE id = #{id}
+    </update>
+    <update id="rejectMessage">
+        UPDATE message
+        SET state = -1
+        WHERE id = #{id}
+    </update>
+
+    <!-- 查询已审核通过的消息列表 -->
+    <select id="selectApprovedList" resultType="Message">
+        SELECT id, content, create_time as createTime, state, user_id as userId, username, displayId
+        FROM message
+        WHERE state = 1
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectMessages" resultType="uno.acloud.pojo.Message">
+        SELECT id, content, create_time, state, user_id, username, nickname, displayId, position
+        FROM message
+        ORDER BY state, create_time DESC
+    </select>
+</mapper>
